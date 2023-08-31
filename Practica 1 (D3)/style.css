@@ -1,0 +1,7 @@
+.bar {
+    fill: rgba(195, 95, 41, 0.861)
+}
+
+.max.bar {
+    fill: rgb(162, 206, 181) !important;
+}
