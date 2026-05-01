@@ -40,27 +40,8 @@
         <section id="galeria" class="gallery-section">
             <h2>Sus mejores momentos</h2>
             <p class="section-sub">Cada foto, un trocito de su personalidad</p>
-            <div class="gallery">
-                <figure class="card">
-                    <img src="images/cat-1.jpg" alt="Mi gato mirando a la cámara con sus ojos azules" loading="lazy">
-                    <figcaption>Esos ojos que lo dicen todo</figcaption>
-                </figure>
-                <figure class="card">
-                    <img src="images/cat-2.jpg" alt="Mi gato durmiendo plácidamente en la cama" loading="lazy">
-                    <figcaption>Modo siesta activado</figcaption>
-                </figure>
-                <figure class="card">
-                    <img src="images/cat-3.jpg" alt="Mi gato descansando en el sofá" loading="lazy">
-                    <figcaption>El trono del salón</figcaption>
-                </figure>
-                <figure class="card">
-                    <img src="images/cat-4.jpg" alt="Mi gato relajado junto a la ventana" loading="lazy">
-                    <figcaption>Vigilando el reino</figcaption>
-                </figure>
-                <figure class="card">
-                    <img src="images/cat-5.jpg" alt="Foto especial de mi gato" loading="lazy">
-                    <figcaption>El día más especial</figcaption>
-                </figure>
+            <div id="gallery" class="gallery" aria-live="polite">
+                <p class="gallery-status" id="gallery-status">Cargando fotos…</p>
             </div>
         </section>
 
@@ -89,6 +70,8 @@
             </div>
         </section>
     </main>
+
+    <script src="gallery.js"></script>
 
     <footer>
         <p>Hecho con 💛 para el mejor gato del mundo</p>

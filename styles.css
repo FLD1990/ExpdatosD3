@@ -238,6 +238,14 @@ h2 {
     gap: 1.5rem;
 }
 
+.gallery-status {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--ink-soft);
+    padding: 2rem;
+    font-style: italic;
+}
+
 .card {
     background: white;
     border-radius: 22px;
