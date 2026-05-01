@@ -242,29 +242,68 @@ h2 {
     50% { opacity: 0.55; transform: scale(0.85); }
 }
 
-/* Portrait */
+/* Portrait — MGM-style */
 .hero-portrait {
     position: relative;
-    width: clamp(180px, 32vw, 240px);
+    width: clamp(260px, 46vw, 380px);
     aspect-ratio: 1;
-    margin: 0 auto 2rem;
+    margin: 0 auto 2.5rem;
+}
+
+.hero-portrait-inner {
+    position: absolute;
+    inset: 0;
     animation: portrait-float 6s ease-in-out infinite;
 }
 
 @keyframes portrait-float {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-8px); }
 }
 
+/* Sunburst rays behind the frame */
+.hero-rays-wrap {
+    position: absolute;
+    inset: -32%;
+    pointer-events: none;
+    opacity: 0;
+    transform: scale(0.6);
+    animation: rays-burst 1.6s var(--ease-glide) 0.1s forwards;
+}
+
+@keyframes rays-burst {
+    to { opacity: 0.9; transform: scale(1); }
+}
+
+.hero-rays {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background:
+        repeating-conic-gradient(
+            from 0deg,
+            rgba(255, 220, 130, 0.45) 0deg 2deg,
+            transparent 2deg 9deg
+        );
+    -webkit-mask: radial-gradient(circle, black 22%, transparent 60%);
+    mask: radial-gradient(circle, black 22%, transparent 60%);
+    animation: rays-rotate 110s linear infinite;
+    filter: blur(0.5px);
+}
+
+@keyframes rays-rotate { to { transform: rotate(360deg); } }
+
+/* Photo stack */
 .hero-portrait-stack {
     position: absolute;
-    inset: 6%;
+    inset: 20%;
     border-radius: 50%;
     overflow: hidden;
-    box-shadow: 0 30px 80px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+    box-shadow: 0 30px 80px -10px rgba(0, 0, 0, 0.7), 0 0 0 2px rgba(0, 0, 0, 0.5) inset;
     opacity: 0;
-    transition: opacity 1.5s var(--ease-glide);
+    transition: opacity 1.5s var(--ease-glide) 0.3s;
     isolation: isolate;
+    z-index: 1;
 }
 
 .hero-portrait-stack.loaded { opacity: 1; }
@@ -292,24 +331,38 @@ h2 {
     100% { transform: scale(1.18) translate(-2%, -1.5%); }
 }
 
-.hero-portrait-ring {
+/* Decorative SVG frame */
+.hero-frame {
     position: absolute;
     inset: 0;
-    border-radius: 50%;
-    background: conic-gradient(from 180deg, var(--accent-1), var(--accent-2), var(--accent-3), var(--accent-4), var(--accent-1));
-    animation: spin-ring 14s linear infinite;
-    filter: blur(0.5px);
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0;
+    animation: frame-fade 1.2s ease 0.45s forwards;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5));
 }
 
-.hero-portrait-ring::after {
-    content: "";
-    position: absolute;
-    inset: 4%;
-    border-radius: 50%;
-    background: var(--bg-deep);
+@keyframes frame-fade { to { opacity: 1; } }
+
+.hero-banner {
+    transform-origin: 200px 0;
+    transform-box: fill-box;
+    opacity: 0;
+    animation: ribbon-drop 0.9s var(--ease-spring) 0.75s forwards;
 }
 
-@keyframes spin-ring { to { transform: rotate(360deg); } }
+@keyframes ribbon-drop {
+    0%   { opacity: 0; transform: translateY(-14px); }
+    60%  { opacity: 1; transform: translateY(3px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.hero-curved-text {
+    opacity: 0;
+    animation: frame-fade 1s ease 1.2s forwards;
+}
 
 /* Title */
 .hero-title {

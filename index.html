@@ -34,8 +34,42 @@
                 </span>
 
                 <div class="hero-portrait" id="hero-portrait" aria-hidden="true">
-                    <div class="hero-portrait-ring"></div>
-                    <div class="hero-portrait-stack" id="hero-portrait-stack"></div>
+                    <div class="hero-rays-wrap">
+                        <div class="hero-rays"></div>
+                    </div>
+                    <div class="hero-portrait-inner">
+                        <div class="hero-portrait-stack" id="hero-portrait-stack"></div>
+                        <svg class="hero-frame" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                            <defs>
+                                <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#fff3c4"/>
+                                    <stop offset="45%" stop-color="#d4a544"/>
+                                    <stop offset="100%" stop-color="#7a4a14"/>
+                                </linearGradient>
+                                <linearGradient id="ribbonGrad" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#ffe39a"/>
+                                    <stop offset="100%" stop-color="#9a6d22"/>
+                                </linearGradient>
+                                <path id="curveBottom" d="M 55,200 A 145,145 0 0 0 345,200"/>
+                            </defs>
+
+                            <circle cx="200" cy="200" r="172" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
+                            <circle cx="200" cy="200" r="125" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
+                            <circle cx="200" cy="200" r="148" fill="none" stroke="url(#goldGrad)" stroke-width="0.6" opacity="0.45"/>
+
+                            <text class="hero-curved-text" font-family="'Instrument Serif', serif" font-style="italic" font-size="16" fill="url(#goldGrad)" letter-spacing="5">
+                                <textPath href="#curveBottom" startOffset="50%" text-anchor="middle">ARS · GRATIA · FELIS</textPath>
+                            </text>
+
+                            <g class="hero-banner">
+                                <path d="M30,55 L72,58 L62,85 L20,92 Z" fill="#7a4a14"/>
+                                <path d="M370,55 L328,58 L338,85 L380,92 Z" fill="#7a4a14"/>
+                                <path d="M62,55 Q200,25 338,55 L328,95 Q200,70 72,95 Z" fill="url(#ribbonGrad)" stroke="#7a4a14" stroke-width="1.2"/>
+                                <path d="M72,76 Q200,52 328,76" fill="none" stroke="#7a4a14" stroke-width="0.5" opacity="0.5"/>
+                                <text x="200" y="84" text-anchor="middle" fill="#3d2710" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="22" letter-spacing="4">JARANA</text>
+                            </g>
+                        </svg>
+                    </div>
                 </div>
 
                 <h1 class="hero-title">
