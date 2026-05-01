@@ -644,13 +644,17 @@ h2 {
     margin: 0 auto;
 }
 
-#cusdis_thread { color: var(--ink); }
+#cusdis_thread {
+    color: var(--ink);
+    min-height: 480px;
+}
 
 #cusdis_thread iframe {
     width: 100% !important;
+    min-height: 700px;
     border: none !important;
     background: transparent !important;
-    color-scheme: dark;
+    display: block;
 }
 
 /* ==========================

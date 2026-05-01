@@ -269,26 +269,63 @@
         setTimeout(celebrate, 800);
     }
 
-    // Listen to Cusdis iframe events
+    // ---- Cusdis: fix mobile iframe sizing ----
+    const cusdisRoot = document.getElementById('cusdis_thread');
+
+    function tuneCusdisIframe(iframe) {
+        if (!iframe) return;
+        iframe.setAttribute('scrolling', 'no');
+        iframe.style.width = '100%';
+        iframe.style.minHeight = '700px';
+        iframe.style.border = '0';
+    }
+
+    if (cusdisRoot) {
+        // If iframe already exists, tune it
+        const existing = cusdisRoot.querySelector('iframe');
+        if (existing) tuneCusdisIframe(existing);
+
+        // Watch for the iframe being injected by cusdis.es.js
+        const iframeObserver = new MutationObserver(muts => {
+            muts.forEach(m => m.addedNodes.forEach(n => {
+                if (n.tagName === 'IFRAME') tuneCusdisIframe(n);
+                if (n.querySelector) {
+                    const inner = n.querySelector('iframe');
+                    if (inner) tuneCusdisIframe(inner);
+                }
+            }));
+        });
+        iframeObserver.observe(cusdisRoot, { childList: true, subtree: true });
+    }
+
+    // Listen to Cusdis iframe events for celebration AND to honor its
+    // resize requests (the SDK already does this but we reinforce it
+    // because some mobile browsers drop the message).
     window.addEventListener('message', (event) => {
         if (!event.origin.includes('cusdis.com')) return;
         const d = event.data;
+        const iframe = cusdisRoot && cusdisRoot.querySelector('iframe');
+
+        // Resize honor: { from: 'cusdis', event: 'resize', data: <height> }
+        if (d && typeof d === 'object' && d.from === 'cusdis') {
+            if (d.event === 'resize' && iframe && typeof d.data === 'number') {
+                iframe.style.height = Math.max(d.data, 480) + 'px';
+            }
+        }
+
         const text = typeof d === 'string' ? d : JSON.stringify(d || '');
-        // Cusdis emits various messages; we trigger on anything that looks
-        // like a successful comment creation.
         if (/created|submit|posted|approved|success/i.test(text)) {
             celebrate();
         }
     });
 
-    // Heuristic fallback: detect when the cusdis iframe grows in height
-    // shortly after a click inside it. This catches the "submitted" UI
-    // even if Cusdis doesn't emit a clear event.
-    const cusdisRoot = document.getElementById('cusdis_thread');
+    // Heuristic fallback for celebration: detect when content height grows
+    // shortly after a click inside the comments area.
     if (cusdisRoot) {
         let interactedAt = 0;
         let lastHeight = 0;
         cusdisRoot.addEventListener('mousedown', () => { interactedAt = Date.now(); });
+        cusdisRoot.addEventListener('touchstart', () => { interactedAt = Date.now(); }, { passive: true });
         const ro = new ResizeObserver(entries => {
             for (const entry of entries) {
                 const h = entry.contentRect.height;
