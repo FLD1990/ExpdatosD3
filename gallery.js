@@ -9,6 +9,7 @@
     const gallery = document.getElementById('gallery');
     const heroBgImg = document.getElementById('hero-bg-img');
     const heroPortrait = document.getElementById('hero-portrait');
+    const heroStack = document.getElementById('hero-portrait-stack');
 
     /* ----------- IMAGE DISCOVERY ------------ */
 
@@ -39,19 +40,41 @@
 
     /* ----------- HERO BACKGROUND ------------ */
 
-    function setHeroPhoto(url) {
+    function setHeroBg(url) {
         if (!url) return;
         const test = new Image();
         test.onload = () => {
             heroBgImg.style.backgroundImage = `url("${url}")`;
             heroBgImg.classList.add('loaded');
-            const portraitImg = heroPortrait.querySelector('.hero-portrait-img');
-            if (portraitImg) {
-                portraitImg.style.backgroundImage = `url("${url}")`;
-                portraitImg.classList.add('loaded');
-            }
         };
         test.src = url;
+    }
+
+    function startPortraitSlideshow(urls) {
+        if (!heroStack || !urls.length) return;
+        heroStack.innerHTML = '';
+        urls.forEach(u => {
+            const img = document.createElement('img');
+            img.src = u;
+            img.alt = '';
+            heroStack.appendChild(img);
+        });
+        const imgs = Array.from(heroStack.children);
+        let idx = 0;
+        imgs[idx].classList.add('active');
+        heroStack.classList.add('loaded');
+
+        if (imgs.length < 2) return;
+        setInterval(() => {
+            const prev = idx;
+            idx = (idx + 1) % imgs.length;
+            imgs[idx].classList.add('active');
+            // remove .active from prev after the crossfade so the
+            // ken-burns animation restarts cleanly on the new image
+            setTimeout(() => imgs[prev].classList.remove('active'), 1400);
+            // sync background blur
+            setHeroBg(imgs[idx].src);
+        }, 4200);
     }
 
     /* ----------- FAST-FRAME LOADING ------------ */
@@ -134,8 +157,9 @@
 
         const urls = supported.map(f => `${FOLDER}/${encodeURIComponent(f.name)}`);
 
-        // Hero uses the first photo
-        setHeroPhoto(urls[0]);
+        // Hero portrait cycles through every photo (Ken-Burns + crossfade)
+        setHeroBg(urls[0]);
+        startPortraitSlideshow(urls);
 
         // Wait for all to preload before flicker so frames change crisply
         gallery.innerHTML = '';

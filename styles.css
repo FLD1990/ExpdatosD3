@@ -256,18 +256,41 @@ h2 {
     50% { transform: translateY(-10px); }
 }
 
-.hero-portrait-img {
+.hero-portrait-stack {
     position: absolute;
     inset: 6%;
     border-radius: 50%;
-    background-size: cover;
-    background-position: center 25%;
+    overflow: hidden;
     box-shadow: 0 30px 80px -10px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15) inset;
     opacity: 0;
     transition: opacity 1.5s var(--ease-glide);
+    isolation: isolate;
 }
 
-.hero-portrait-img.loaded { opacity: 1; }
+.hero-portrait-stack.loaded { opacity: 1; }
+
+.hero-portrait-stack img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
+    opacity: 0;
+    transform: scale(1.05);
+    transition: opacity 1.4s var(--ease-glide);
+    will-change: transform, opacity;
+}
+
+.hero-portrait-stack img.active {
+    opacity: 1;
+    animation: ken-burns 7s var(--ease-glide) forwards;
+}
+
+@keyframes ken-burns {
+    0%   { transform: scale(1.05) translate(0, 0); }
+    100% { transform: scale(1.18) translate(-2%, -1.5%); }
+}
 
 .hero-portrait-ring {
     position: absolute;
