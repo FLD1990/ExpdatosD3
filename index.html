@@ -65,24 +65,15 @@
             </div>
 
             <div class="glass comments-card">
-                <form id="comment-form" class="comment-form" autocomplete="off">
-                    <label class="field">
-                        <span>Tu nombre</span>
-                        <input type="text" id="c-name" maxlength="40" required placeholder="Ej. Tía Marta">
-                    </label>
-                    <label class="field">
-                        <span>Tu mensaje</span>
-                        <textarea id="c-message" maxlength="500" rows="3" required placeholder="¡Muchas felicidades, peludito!"></textarea>
-                    </label>
-                    <button type="submit" class="btn btn-primary submit-btn" id="c-submit">
-                        <span>Enviar felicitación</span>
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-                    </button>
-                    <p class="form-status" id="c-status"></p>
-                </form>
-
-                <div id="comments-list" class="comments-list" aria-live="polite"></div>
-                <p id="comments-empty" class="empty-state">Aún no hay felicitaciones. ¡Sé el primero! 🐱</p>
+                <div id="cusdis_thread"
+                    data-host="https://cusdis.com"
+                    data-app-id="071730b3-7090-4e30-bfaf-052dd6d75545"
+                    data-page-id="cumple-gato"
+                    data-page-url="https://fld1990.github.io/ExpdatosD3/"
+                    data-page-title="Cumpleaños del gato"
+                    data-theme="dark"
+                ></div>
+                <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
             </div>
         </section>
 
@@ -91,7 +82,6 @@
         </footer>
     </main>
 
-    <script type="module" src="comments.js"></script>
     <script src="gallery.js"></script>
 </body>
 </html>
