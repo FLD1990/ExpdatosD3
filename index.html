@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Feliz Cumpleaños! 🎂</title>
+    <meta name="description" content="Una web especial para celebrar el cumpleaños de mi gato">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Caveat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="confetti" aria-hidden="true"></div>
+
+    <header class="hero">
+        <div class="balloons" aria-hidden="true">
+            <span class="balloon b1"></span>
+            <span class="balloon b2"></span>
+            <span class="balloon b3"></span>
+            <span class="balloon b4"></span>
+            <span class="balloon b5"></span>
+        </div>
+        <div class="hero-inner">
+            <p class="kicker">Hoy celebramos a la estrella de la casa</p>
+            <h1>¡Feliz Cumpleaños!</h1>
+            <p class="subtitle">Un día muy especial para el rey peludo de ojos azules</p>
+            <div class="cake" aria-hidden="true">
+                <span class="flame"></span>
+                <span class="candle"></span>
+                <span class="layer top"></span>
+                <span class="layer middle"></span>
+                <span class="layer bottom"></span>
+            </div>
+            <a href="#galeria" class="cta">Ver fotos 🐾</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="galeria" class="gallery-section">
+            <h2>Sus mejores momentos</h2>
+            <p class="section-sub">Cada foto, un trocito de su personalidad</p>
+            <div class="gallery">
+                <figure class="card">
+                    <img src="images/cat-1.jpg" alt="Mi gato mirando a la cámara con sus ojos azules" loading="lazy">
+                    <figcaption>Esos ojos que lo dicen todo</figcaption>
+                </figure>
+                <figure class="card">
+                    <img src="images/cat-2.jpg" alt="Mi gato durmiendo plácidamente en la cama" loading="lazy">
+                    <figcaption>Modo siesta activado</figcaption>
+                </figure>
+                <figure class="card">
+                    <img src="images/cat-3.jpg" alt="Mi gato descansando en el sofá" loading="lazy">
+                    <figcaption>El trono del salón</figcaption>
+                </figure>
+                <figure class="card">
+                    <img src="images/cat-4.jpg" alt="Mi gato relajado junto a la ventana" loading="lazy">
+                    <figcaption>Vigilando el reino</figcaption>
+                </figure>
+                <figure class="card">
+                    <img src="images/cat-5.jpg" alt="Foto especial de mi gato" loading="lazy">
+                    <figcaption>El día más especial</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section id="felicitaciones" class="comments-section">
+            <h2>Deja tu felicitación</h2>
+            <p class="section-sub">Escribe un mensajito de cumpleaños 💌</p>
+
+            <form id="comment-form" class="comment-form" autocomplete="off">
+                <label class="field">
+                    <span>Tu nombre</span>
+                    <input type="text" id="name" name="name" maxlength="40" required placeholder="Ej. Tía Marta">
+                </label>
+                <label class="field">
+                    <span>Tu mensaje</span>
+                    <textarea id="message" name="message" maxlength="500" rows="4" required placeholder="¡Muchas felicidades, peludito!"></textarea>
+                </label>
+                <button type="submit" class="submit-btn">Enviar felicitación 🎉</button>
+                <p class="form-hint">Las felicitaciones se guardan en este navegador.</p>
+            </form>
+
+            <div id="comments-list" class="comments-list" aria-live="polite"></div>
+            <p id="empty-state" class="empty-state">Aún no hay felicitaciones. ¡Sé el primero en dejarle un mensaje! 🐱</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Hecho con 💛 para el mejor gato del mundo</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
