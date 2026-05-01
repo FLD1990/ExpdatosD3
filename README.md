@@ -1,49 +1,50 @@
 # 🎂 Web de cumpleaños del gato
 
-Web estática con galería de fotos y comentarios compartidos vía giscus.
+Estética Liquid Glass · galería dinámica · comentarios sin login (vía Firebase).
 
-## Pasos para que funcione (en orden)
+## Setup pendiente: conectar la base de datos (3 minutos)
 
-### 1. Subir las 5 fotos
-👉 https://github.com/FLD1990/ExpdatosD3/upload/claude/cat-birthday-website-XcK80/images
+Para que los visitantes puedan dejar comentarios sin registrarse en GitHub, hace falta una base de datos. Uso **Firebase Realtime Database** porque es gratis para siempre y se monta en clics.
 
-Renómbralas a `cat-1.jpg`, `cat-2.jpg`, `cat-3.jpg`, `cat-4.jpg`, `cat-5.jpg` y arrástralas. Pulsa **Commit changes**.
+### Pasos
 
-### 2. Activar Discussions
-👉 https://github.com/FLD1990/ExpdatosD3/settings#features
+1. **Crear proyecto Firebase** (con tu cuenta de Google):
+   👉 https://console.firebase.google.com/
+   - *Add project* → nombre cualquiera (p. ej. `cumple-gato`) → desactiva Analytics → *Create*.
 
-Baja a la sección **Features** y marca la casilla **Discussions**.
+2. **Activar la Realtime Database**:
+   En el menú lateral: *Build → Realtime Database → Create Database*.
+   - Región: la que prefieras (Europa va bien).
+   - Reglas: **Start in test mode** → *Enable*.
 
-### 3. Instalar la app de giscus
-👉 https://github.com/apps/giscus/installations/select_target
+3. **Registrar la app web**:
+   En el icono ⚙️ → *Project settings → General*. Baja a *Your apps* → pulsa el icono `</>` (Web).
+   - Apodo: `web` (lo que sea) → *Register app*.
+   - Aparece un bloque `firebaseConfig = { ... }` con 7 valores (`apiKey`, `authDomain`, `databaseURL`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`).
 
-Elige tu cuenta → **Only select repositories** → marca `ExpdatosD3` → **Install**.
+4. **Pégame ese bloque entero aquí en el chat** y yo lo dejo cableado en `comments.js`.
 
-### 4. Conseguir el `category-id` que falta
-👉 https://giscus.app
+> ⚠️ Si no aparece `databaseURL` en el config, vuelve a *Realtime Database* y copia la URL `https://...firebaseio.com` (o `...firebasedatabase.app`) — es esa.
 
-- En **Repository** escribe: `FLD1990/ExpdatosD3`
-- Verás ✅ verde si los pasos 2 y 3 están bien.
-- En **Discussion Category** elige **Announcements**.
-- Baja hasta el bloque `<script src="https://giscus.app/client.js" ...>` y copia solo el valor de `data-category-id` (algo tipo `DIC_kwDO...`).
-- Pégalo en `index.html` reemplazando `PEGA_AQUI_TU_CATEGORY_ID`.
+### Reglas de seguridad recomendadas (después)
 
-### 5. Activar GitHub Pages
-👉 https://github.com/FLD1990/ExpdatosD3/settings/pages
+Test mode caduca a los 30 días. Para que dure para siempre, en *Realtime Database → Rules* pega:
 
-- **Source**: *Deploy from a branch*
-- **Branch**: `main` (haz merge de la rama antes) o la rama actual `claude/cat-birthday-website-XcK80`
-- **Folder**: `/ (root)` → **Save**
-
-En 1-2 minutos la web estará en:
-👉 https://fld1990.github.io/ExpdatosD3/
+```json
+{
+  "rules": {
+    "comments": {
+      ".read": true,
+      ".write": "newData.hasChildren(['name','message']) && newData.child('message').isString() && newData.child('message').val().length <= 500 && newData.child('name').val().length <= 40"
+    }
+  }
+}
+```
 
 ## Estructura
 
-- `index.html` — página principal (giscus integrado)
-- `styles.css` — estilos festivos
-- `images/` — fotos del gato
-
-## Avisarme cuando hayas hecho los pasos
-
-Si me dices el `category-id` del paso 4, lo pego yo por ti y lo dejo todo listo.
+- `index.html` — markup
+- `styles.css` — Liquid Glass (aurora animada, glassmorphism, gradientes)
+- `gallery.js` — descubre las fotos en `images/` vía la API de GitHub + animaciones
+- `comments.js` — comentarios en tiempo real (Firebase Realtime Database)
+- `images/` — fotos del gato (cualquier nombre, formato JPG/PNG/WebP/GIF/AVIF/SVG)
