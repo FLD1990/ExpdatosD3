@@ -279,6 +279,16 @@ h2 {
     box-shadow: var(--shadow);
 }
 
+.giscus-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding-top: 1rem;
+}
+
+.giscus, .giscus-frame {
+    width: 100% !important;
+}
+
 .comment-form {
     max-width: 560px;
     margin: 0 auto 2.5rem;
