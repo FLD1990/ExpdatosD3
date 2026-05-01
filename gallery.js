@@ -6,20 +6,11 @@
     const IMAGE_RE = /\.(jpe?g|png|webp|gif|avif|svg)$/i;
     const UNSUPPORTED_RE = /\.(heic|heif|tiff?|raw|cr2|nef|arw)$/i;
 
-    const captions = [
-        'Esos ojos que lo dicen todo',
-        'Modo siesta activado',
-        'El trono del salón',
-        'Vigilando el reino',
-        'El día más especial',
-        'Pequeño rey peludo',
-        'Mirada de modelo',
-        'Pose de campeón',
-        'Sueños felinos',
-        'Puro amor'
-    ];
-
     const gallery = document.getElementById('gallery');
+    const heroBgImg = document.getElementById('hero-bg-img');
+    const heroPortrait = document.getElementById('hero-portrait');
+
+    /* ----------- IMAGE DISCOVERY ------------ */
 
     async function fetchFolder(ref) {
         const url = `https://api.github.com/repos/${REPO}/contents/${FOLDER}?ref=${encodeURIComponent(ref)}`;
@@ -46,7 +37,89 @@
         gallery.innerHTML = `<p class="gallery-status">${text}</p>`;
     }
 
-    function render(files) {
+    /* ----------- HERO BACKGROUND ------------ */
+
+    function setHeroPhoto(url) {
+        if (!url) return;
+        const test = new Image();
+        test.onload = () => {
+            heroBgImg.style.backgroundImage = `url("${url}")`;
+            heroBgImg.classList.add('loaded');
+            const portraitImg = heroPortrait.querySelector('.hero-portrait-img');
+            if (portraitImg) {
+                portraitImg.style.backgroundImage = `url("${url}")`;
+                portraitImg.classList.add('loaded');
+            }
+        };
+        test.src = url;
+    }
+
+    /* ----------- FAST-FRAME LOADING ------------ */
+
+    function preloadAll(urls) {
+        return Promise.all(urls.map(u => new Promise(res => {
+            const img = new Image();
+            img.onload = img.onerror = () => res();
+            img.src = u;
+        })));
+    }
+
+    function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    function buildCard(idx, total, urls, finalUrl) {
+        const fig = document.createElement('figure');
+        fig.className = 'card flickering';
+        fig.style.animationDelay = `${0.04 * idx}s`;
+
+        const final = document.createElement('img');
+        final.className = 'final';
+        final.alt = 'Foto de Jarana';
+        final.loading = 'lazy';
+        final.src = finalUrl;
+
+        const frame = document.createElement('img');
+        frame.className = 'frame active';
+        frame.alt = '';
+        frame.src = urls[idx % urls.length];
+
+        fig.appendChild(frame);
+        fig.appendChild(final);
+
+        // Schedule fast-frame flicker
+        const sequence = shuffle(urls);
+        let i = 0;
+        const startDelay = 350 + idx * 70;        // staggered start
+        const flickers = 6 + Math.floor(Math.random() * 4); // 6-9 frames
+        const interval = 75;
+
+        setTimeout(() => {
+            fig.classList.add('in');
+            const tick = setInterval(() => {
+                i++;
+                if (i >= flickers) {
+                    clearInterval(tick);
+                    final.classList.add('shown');
+                    setTimeout(() => {
+                        frame.remove();
+                        fig.classList.remove('flickering');
+                    }, 700);
+                    return;
+                }
+                frame.src = sequence[i % sequence.length];
+            }, interval);
+        }, startDelay);
+
+        return fig;
+    }
+
+    function renderGallery(files) {
         const supported = files.filter(f => IMAGE_RE.test(f.name));
         const unsupported = files.filter(f => UNSUPPORTED_RE.test(f.name));
 
@@ -59,15 +132,18 @@
             return;
         }
 
+        const urls = supported.map(f => `${FOLDER}/${encodeURIComponent(f.name)}`);
+
+        // Hero uses the first photo
+        setHeroPhoto(urls[0]);
+
+        // Wait for all to preload before flicker so frames change crisply
         gallery.innerHTML = '';
-        supported.forEach((file, idx) => {
-            const fig = document.createElement('figure');
-            fig.className = 'card';
-            fig.innerHTML = `
-                <img src="${FOLDER}/${encodeURIComponent(file.name)}" alt="Foto ${idx + 1} del cumpleañero" loading="lazy">
-                <figcaption>${captions[idx % captions.length]}</figcaption>
-            `;
-            gallery.appendChild(fig);
+        preloadAll(urls).then(() => {
+            urls.forEach((finalUrl, idx) => {
+                const card = buildCard(idx, urls.length, urls, finalUrl);
+                gallery.appendChild(card);
+            });
         });
 
         if (unsupported.length > 0) {
@@ -79,15 +155,14 @@
     }
 
     listImages()
-        .then(render)
+        .then(renderGallery)
         .catch(err => {
             console.error(err);
             showStatus('No pude cargar la galería. Recarga la página o revisa que el repo sea público.');
         });
 
-    /* ------------------- ANIMATIONS ------------------- */
+    /* ----------- ANIMATIONS ------------ */
 
-    // Reveal on scroll
     const io = new IntersectionObserver((entries) => {
         entries.forEach(e => {
             if (e.isIntersecting) {
@@ -99,33 +174,17 @@
 
     document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
-    // Subtle 3D tilt on hero card
-    const tiltEl = document.querySelector('[data-tilt]');
-    if (tiltEl && window.matchMedia('(hover: hover)').matches) {
-        const max = 6;
-        tiltEl.addEventListener('mousemove', (e) => {
-            const r = tiltEl.getBoundingClientRect();
-            const x = (e.clientX - r.left) / r.width - 0.5;
-            const y = (e.clientY - r.top) / r.height - 0.5;
-            tiltEl.style.transform = `perspective(1200px) rotateX(${(-y * max).toFixed(2)}deg) rotateY(${(x * max).toFixed(2)}deg)`;
-        });
-        tiltEl.addEventListener('mouseleave', () => {
-            tiltEl.style.transform = '';
-        });
-    }
-
-    // Cursor-following blob in the background (extra dynamic touch)
-    const aurora = document.querySelector('.aurora');
-    if (aurora && window.matchMedia('(hover: hover)').matches) {
+    // Cursor-tracked parallax on hero background
+    if (heroBgImg && window.matchMedia('(hover: hover)').matches) {
         let raf = 0, tx = 0, ty = 0, cx = 0, cy = 0;
         document.addEventListener('mousemove', e => {
-            tx = (e.clientX / window.innerWidth - 0.5) * 30;
-            ty = (e.clientY / window.innerHeight - 0.5) * 30;
+            tx = (e.clientX / window.innerWidth - 0.5) * 18;
+            ty = (e.clientY / window.innerHeight - 0.5) * 18;
             if (!raf) {
                 raf = requestAnimationFrame(function tick() {
-                    cx += (tx - cx) * 0.06;
-                    cy += (ty - cy) * 0.06;
-                    aurora.style.transform = `translate(${cx.toFixed(2)}px, ${cy.toFixed(2)}px)`;
+                    cx += (tx - cx) * 0.05;
+                    cy += (ty - cy) * 0.05;
+                    heroBgImg.style.transform = `scale(1.18) translate(${cx.toFixed(2)}px, ${cy.toFixed(2)}px)`;
                     if (Math.abs(tx - cx) > 0.1 || Math.abs(ty - cy) > 0.1) {
                         raf = requestAnimationFrame(tick);
                     } else {
@@ -134,5 +193,90 @@
                 });
             }
         });
+    }
+
+    /* ----------- CELEBRATION ------------ */
+
+    const celebration = document.getElementById('celebration');
+    const confettiBox = document.getElementById('celebration-confetti');
+    const COLORS = ['#ff5fa2', '#8b6cff', '#38d6ff', '#ffd66b', '#ffffff', '#ff8acc'];
+    let lastCelebrate = 0;
+
+    function spawnConfetti(count = 60) {
+        confettiBox.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const piece = document.createElement('span');
+            piece.className = 'confetti-piece';
+            const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
+            const distance = 200 + Math.random() * 280;
+            const vx = Math.cos(angle) * distance;
+            const vy = Math.sin(angle) * distance - 80;
+            piece.style.setProperty('--vx', `${vx}px`);
+            piece.style.setProperty('--vy', `${vy}px`);
+            piece.style.background = COLORS[i % COLORS.length];
+            piece.style.animationDelay = `${Math.random() * 0.15}s`;
+            confettiBox.appendChild(piece);
+        }
+        for (let i = 0; i < 12; i++) {
+            const heart = document.createElement('span');
+            heart.className = 'heart-piece';
+            heart.textContent = ['💛', '💗', '💜', '💙', '✨'][i % 5];
+            heart.style.setProperty('--hx', `${(Math.random() - 0.5) * 80}vw`);
+            heart.style.animationDelay = `${0.1 + Math.random() * 0.6}s`;
+            heart.style.fontSize = `${1.2 + Math.random() * 1.4}rem`;
+            confettiBox.appendChild(heart);
+        }
+    }
+
+    function celebrate() {
+        const now = Date.now();
+        if (now - lastCelebrate < 4000) return;
+        lastCelebrate = now;
+        spawnConfetti(70);
+        celebration.classList.remove('active');
+        // force reflow so animation restarts
+        void celebration.offsetWidth;
+        celebration.classList.add('active');
+        setTimeout(() => celebration.classList.remove('active'), 3200);
+    }
+
+    // Test trigger via URL: ?celebrar=1
+    if (/[?&]celebrar=1/.test(location.search)) {
+        setTimeout(celebrate, 800);
+    }
+
+    // Listen to Cusdis iframe events
+    window.addEventListener('message', (event) => {
+        if (!event.origin.includes('cusdis.com')) return;
+        const d = event.data;
+        const text = typeof d === 'string' ? d : JSON.stringify(d || '');
+        // Cusdis emits various messages; we trigger on anything that looks
+        // like a successful comment creation.
+        if (/created|submit|posted|approved|success/i.test(text)) {
+            celebrate();
+        }
+    });
+
+    // Heuristic fallback: detect when the cusdis iframe grows in height
+    // shortly after a click inside it. This catches the "submitted" UI
+    // even if Cusdis doesn't emit a clear event.
+    const cusdisRoot = document.getElementById('cusdis_thread');
+    if (cusdisRoot) {
+        let interactedAt = 0;
+        let lastHeight = 0;
+        cusdisRoot.addEventListener('mousedown', () => { interactedAt = Date.now(); });
+        const ro = new ResizeObserver(entries => {
+            for (const entry of entries) {
+                const h = entry.contentRect.height;
+                const grew = h > lastHeight + 30;
+                const recentlyInteracted = Date.now() - interactedAt < 8000;
+                if (grew && recentlyInteracted && lastHeight > 0) {
+                    celebrate();
+                    interactedAt = 0;
+                }
+                lastHeight = h;
+            }
+        });
+        ro.observe(cusdisRoot);
     }
 })();
