@@ -36,37 +36,96 @@
                 <div class="hero-portrait" id="hero-portrait" aria-hidden="true">
                     <div class="hero-rays-wrap">
                         <div class="hero-rays"></div>
+                        <div class="hero-rays-soft"></div>
                     </div>
                     <div class="hero-portrait-inner">
                         <div class="hero-portrait-stack" id="hero-portrait-stack"></div>
                         <svg class="hero-frame" viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
                             <defs>
-                                <linearGradient id="goldGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#fff3c4"/>
-                                    <stop offset="45%" stop-color="#d4a544"/>
-                                    <stop offset="100%" stop-color="#7a4a14"/>
+                                <linearGradient id="goldFill" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#fff7d2"/>
+                                    <stop offset="22%" stop-color="#f1cf6b"/>
+                                    <stop offset="50%" stop-color="#c8932a"/>
+                                    <stop offset="78%" stop-color="#8d6017"/>
+                                    <stop offset="100%" stop-color="#3a2607"/>
                                 </linearGradient>
-                                <linearGradient id="ribbonGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#ffe39a"/>
-                                    <stop offset="100%" stop-color="#9a6d22"/>
+                                <linearGradient id="ribbonFill" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#ffeaa3"/>
+                                    <stop offset="55%" stop-color="#dfa84a"/>
+                                    <stop offset="100%" stop-color="#8d6017"/>
                                 </linearGradient>
-                                <path id="curveBottom" d="M 55,200 A 145,145 0 0 0 345,200"/>
+                                <linearGradient id="shimmerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#fff7d2" stop-opacity="0"/>
+                                    <stop offset="50%" stop-color="#fff7d2" stop-opacity="0.55"/>
+                                    <stop offset="100%" stop-color="#fff7d2" stop-opacity="0"/>
+                                </linearGradient>
+                                <path id="curveBottom" d="M 56,200 A 148,148 0 0 0 344,200"/>
+                                <clipPath id="donutClip">
+                                    <path d="M 18,200 A 182,182 0 1 0 382,200 A 182,182 0 1 0 18,200 Z M 90,200 A 110,110 0 1 1 310,200 A 110,110 0 1 1 90,200 Z" fill-rule="evenodd"/>
+                                </clipPath>
                             </defs>
 
-                            <circle cx="200" cy="200" r="172" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
-                            <circle cx="200" cy="200" r="125" fill="none" stroke="url(#goldGrad)" stroke-width="2"/>
-                            <circle cx="200" cy="200" r="148" fill="none" stroke="url(#goldGrad)" stroke-width="0.6" opacity="0.45"/>
+                            <!-- Solid gold donut frame -->
+                            <path class="frame-donut"
+                                d="M 18,200 A 182,182 0 1 0 382,200 A 182,182 0 1 0 18,200 Z M 90,200 A 110,110 0 1 1 310,200 A 110,110 0 1 1 90,200 Z"
+                                fill="url(#goldFill)"
+                                fill-rule="evenodd"/>
 
-                            <text class="hero-curved-text" font-family="'Instrument Serif', serif" font-style="italic" font-size="16" fill="url(#goldGrad)" letter-spacing="5">
+                            <!-- Edge contours -->
+                            <circle cx="200" cy="200" r="182" fill="none" stroke="#1a0d04" stroke-width="1.2"/>
+                            <circle cx="200" cy="200" r="110" fill="none" stroke="#1a0d04" stroke-width="2"/>
+
+                            <!-- Engraved decorative rings inside the gold -->
+                            <circle cx="200" cy="200" r="170" fill="none" stroke="#3d2710" stroke-width="0.7" opacity="0.65"/>
+                            <circle cx="200" cy="200" r="121" fill="none" stroke="#3d2710" stroke-width="0.7" opacity="0.65"/>
+                            <circle cx="200" cy="200" r="160" fill="none" stroke="#fff5c2" stroke-width="0.5" opacity="0.4"/>
+                            <circle cx="200" cy="200" r="131" fill="none" stroke="#fff5c2" stroke-width="0.5" opacity="0.4"/>
+
+                            <!-- Animated shimmer sweep over the gold band -->
+                            <g clip-path="url(#donutClip)">
+                                <rect class="frame-shimmer" x="-200" y="-50" width="160" height="500" fill="url(#shimmerGrad)" transform="skewX(-18)"/>
+                            </g>
+
+                            <!-- Curved bottom Latin tag -->
+                            <text class="hero-curved-text"
+                                font-family="'Instrument Serif', serif"
+                                font-style="italic"
+                                font-size="20"
+                                fill="#2a1a07"
+                                letter-spacing="6">
                                 <textPath href="#curveBottom" startOffset="50%" text-anchor="middle">ARS · GRATIA · FELIS</textPath>
                             </text>
 
+                            <!-- Side ornaments -->
+                            <g class="ornaments" fill="#2a1a07">
+                                <text x="48" y="208" text-anchor="middle" font-size="22" font-family="serif">✦</text>
+                                <text x="352" y="208" text-anchor="middle" font-size="22" font-family="serif">✦</text>
+                            </g>
+
+                            <!-- Top ribbon banner -->
                             <g class="hero-banner">
-                                <path d="M30,55 L72,58 L62,85 L20,92 Z" fill="#7a4a14"/>
-                                <path d="M370,55 L328,58 L338,85 L380,92 Z" fill="#7a4a14"/>
-                                <path d="M62,55 Q200,25 338,55 L328,95 Q200,70 72,95 Z" fill="url(#ribbonGrad)" stroke="#7a4a14" stroke-width="1.2"/>
-                                <path d="M72,76 Q200,52 328,76" fill="none" stroke="#7a4a14" stroke-width="0.5" opacity="0.5"/>
-                                <text x="200" y="84" text-anchor="middle" fill="#3d2710" font-family="Inter, system-ui, sans-serif" font-weight="800" font-size="22" letter-spacing="4">JARANA</text>
+                                <!-- Notched side tails -->
+                                <path d="M12,46 L72,52 L58,94 L0,102 L18,72 Z" fill="#3d2710"/>
+                                <path d="M388,46 L328,52 L342,94 L400,102 L382,72 Z" fill="#3d2710"/>
+                                <!-- Banner main -->
+                                <path d="M65,50 Q200,14 335,50 L325,100 Q200,66 75,100 Z"
+                                    fill="url(#ribbonFill)"
+                                    stroke="#2a1a07"
+                                    stroke-width="1.4"/>
+                                <!-- Inner pinstripe -->
+                                <path d="M80,76 Q200,55 320,76"
+                                    fill="none"
+                                    stroke="#2a1a07"
+                                    stroke-width="0.5"
+                                    opacity="0.45"/>
+                                <!-- Title -->
+                                <text x="200" y="83"
+                                    text-anchor="middle"
+                                    fill="#2a1a07"
+                                    font-family="Inter, system-ui, sans-serif"
+                                    font-weight="900"
+                                    font-size="26"
+                                    letter-spacing="7">JARANA</text>
                             </g>
                         </svg>
                     </div>
@@ -113,7 +172,6 @@
                     data-page-id="cumple-jarana"
                     data-page-url="https://fld1990.github.io/ExpdatosD3/"
                     data-page-title="Cumpleaños de Jarana"
-                    data-theme="dark"
                 ></div>
                 <script async defer src="https://cusdis.com/js/cusdis.es.js"></script>
             </div>
